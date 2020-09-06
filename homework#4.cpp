@@ -2,8 +2,9 @@
 #include <fstream>
 #include <iomanip>
 #include <cmath>
-using namespace std;
 
+
+using namespace std;
 // Домашняя работа №4
 
 void lesson1(); // Задача 1.
@@ -15,25 +16,35 @@ double triangle(double h, double a); // Площадь через высоту �
 double circle(double r);
 #pragma endregion 
 void lesson4(); // Задача 4.
-void lesson6();
-void lesson7();
+int lesson6(); // Задача 6.
+void lesson7(); // Задача 7.
+void lesson8();
+void lesson9();
 
 int main()
 {
+    
     system("chcp 1251"); // Смена кодировки.
     setlocale(LC_ALL, "Russian");
     /*
     lesson1();
     cout << "Домашняя работа №4. Задача №2. Знак числа." << endl;
-    cout << sign(-22.9);
+    cout << sign(-22.9) << endl;
     cout << "----------------" << endl;
     cout << "Домашняя работа №4. Задача №3. Геометрические фигуры." << endl;
     cout << rectangle(1, 2) << " " << triangle(1, 2, 3) << " " << triangle(3, 4) << " " << circle(5) << endl;
     cout << "----------------" << endl;
-    lesson4();
+    lesson8();
     */
-    lesson7();
+
+    // int l7 = lesson6();
+    lesson9();
+   
+
+    
 }
+
+
 
 void lesson1()
 {
@@ -58,7 +69,7 @@ void lesson1()
         ifile >> getting;
         sum += getting;
     }
-    cout << "Сумма цифр: " << sum;
+    cout << "Сумма цифр: " << sum << endl;
     ifile.close();
     cout << "----------------" << endl;
 }
@@ -128,38 +139,6 @@ void lesson4()
     }
 }
 
-void lesson6()
-{
-    cout << "Домашняя работа №4. Задача №6. Автоматный распознователь." << endl;
-    int temp;
-    string rim; //1-I 5-V 10-X 50-L 100-C 500-D 1000-M
-    cin >> rim;
-    int old_value;
-    old_value = 0;
-    for (int i = rim.length(); i > 0; i--)
-    {
-        switch (rim[i])
-        {
-        case 'I': {temp = 1; break; }
-        case 'V': {temp = 5; break; }
-        case 'X': {temp = 10; break; }
-        case 'L': {temp = 50; break; }
-        case 'C': {temp = 100; break; }
-        case 'D': {temp = 500; break; }
-        case 'M': {temp = 1000; break; }
-        }
-        if (old_value == 0)
-        {
-            old_value = temp;
-        }
-        else if (temp < old_value)
-        {
-          //  old_value
-        }
-    }
-    cout << old_value;
-}
-
 void formul(int s, int m, int c, int i, int iter, int stop)
 {
     int s1 = (s * m + i) % c;
@@ -180,3 +159,195 @@ void lesson7()
     cout << "Введите i: "; cin >> i;
     formul(s, m, c, i, 1, 10);
 }
+
+
+#pragma region Задача 6. Автоматный распознаватель.
+
+bool isCorrectLetter(const char& letter)
+{ //Проверка символов.
+    const int size = 7;
+    char mySymbols[size] = { 'I', 'V', 'X', 'L', 'C', 'D', 'M' };
+    for (int i = 0; i < size; ++i) {
+        if (letter == mySymbols[i]) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool isCorrectSequence(const char& previous, const char& next, int& recurrence)
+{ // Проверка последовательности.
+    if (next == previous && (previous == 'L' || previous == 'D' || previous == 'V')) {
+        return false;
+    }
+    if (recurrence == 3 && (next == 'X' || next == 'C' || next == 'M' || next == 'I')) {
+        return false;
+    }
+    if ((next == 'X' && previous == 'V') || (next == 'C' && previous == 'L') || (next == 'M' && previous == 'D')) {
+        return false;
+    }
+
+    return true;
+}
+
+int getArabNumber(const char& rimNumber)
+{ // Конвертация.
+    switch (rimNumber) {
+    case 'I':
+        return 1;
+    case 'V':
+        return 5;
+    case 'X':
+        return 10;
+    case 'L':
+        return 50;
+    case 'C':
+        return 100;
+    case 'D':
+        return 500;
+    case 'M':
+        return 1000;
+    }
+    return 0;
+}
+
+int calculation(const char array[], const int& count)
+{ // Подсчет.
+    int res = 0;
+    int prev = 0, next;
+    for (int i = count; i >= 0; --i) {
+        next = getArabNumber(array[i]);
+        if (prev > next) {
+            res = (res - prev) + (prev - next);
+        }
+        else {
+            res += next;
+        }
+        prev = next;
+
+    }
+    return res;
+}
+
+
+
+
+void lesson8()
+{
+    cout << "Домашняя работа №4. Задача №8. Умножение  матриц." << endl;
+    int A[3][4] = { {5,2,0,10},{3,5,2,5},{20,0,0,0} };
+    double B[4][2] = { {1.20f, 0.50f},{2.80f, 0.40f},{5.00f, 1.00f},{2.00f, 1.50f} };
+    double C[3][2] = { {0,0}, {0,0}, {0,0} };
+    for (int i = 0; i < 6; i++)
+    {
+        for (int j = 0; j < 4; j++)
+        {
+            C[i % 3][i / 3] += (A[i % 3][j] * B[j][i / 3]);
+        }
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        cout << "Продавец №" << i + 1 << " Доход: " << C[i][0] << " Налоги: " << C[i][1] << " Прибыль: " << C[i][0] - C[i][1] << endl;
+    }
+    cout << "1) Больше: 2, Меньше: 1" << endl;
+    cout << "2) Больше: 1, Меньше: 3" << endl;
+    cout << "3) " << C[0][0] - C[0][1] + C[1][0] - C[1][1] + C[2][0] - C[2][1] << endl;
+    cout << "4) " << C[0][1] + C[1][1] + C[2][1] << endl;
+    cout << "5) " << C[0][0] + C[1][0] + C[2][0] << endl;
+    cout << "----------------" << endl;
+}
+
+void lesson9()
+{
+    cout << "Домашняя работа №4. Задача №9. Системы  счисления." << endl;
+    string old_str;
+    int Nold, Nnew;
+    cout << "Старое основание: ";
+    cin >> Nold;
+    cout << "Старое число: ";
+    cin >> old_str;
+    cout << "Новое основание: ";
+    cin >> Nnew;
+    int temp, sum;
+    sum = 0;
+    temp = 0;
+    for (int i = 0; i < old_str.length(); i++)
+    {
+        switch (old_str[i])
+        {
+        case '0': temp = 0; break;
+        case '1': temp = 1; break;
+        case '2': temp = 2; break;
+        case '3': temp = 3; break;
+        case '4': temp = 4; break;
+        case '5': temp = 5; break;
+        case '6': temp = 6; break;
+        case '7': temp = 7; break;
+        case '8': temp = 8; break;
+        case '9': temp = 9; break;
+        case 'A': temp = 10; break;
+        case 'B': temp = 11; break;
+        case 'C': temp = 12; break;
+        case 'D': temp = 13; break;
+        case 'E': temp = 14; break;
+        case 'F': temp = 15; break;
+        }
+        sum += temp * pow(Nold, old_str.length() - i - 1);
+    }
+    int arr[100000];
+    int t = 0;
+    while (sum != 0)
+    {
+        
+        temp = sum % Nnew;
+        sum = sum / Nnew;
+        arr[t] = temp;
+        t++;
+    }
+    cout << "Ответ: ";
+    for (int i = t-1; i >= 0; i--)
+    {
+        cout << arr[i];
+    }
+}
+
+int lesson6()
+{ // Тело Задачи 6.
+    cout << "Домашняя работа №4. Задача №6. Автоматный распознаватель." << endl;
+    const int size = 256;
+    char s[size], next, previous;
+    int i, recurrence = 0;
+    bool isCorrect = true;
+
+    cout << "Введите Римское число: ";
+    for (i = 0; (next = cin.get()) != '\n'; i++) {
+        if (i == 0) {
+            s[i] = next;
+            previous = next;
+        }
+        else
+        {
+            if (previous == next) recurrence++;
+            else recurrence = 0;
+            if (isCorrectLetter(next) && isCorrectSequence(previous, next, recurrence))
+            {
+                s[i] = next;
+                previous = next;
+            }
+            else
+            {
+                isCorrect = false;
+                break;
+            }
+        }
+    }
+    if (!isCorrect || (s[i - 3] == 'I' && s[i - 2] != 'I')) {
+        cout << "Некорректное число.";
+    }
+    else {
+        cout << "Результат :: " << calculation(s, i - 1);
+    }
+    cout << "----------------" << endl;
+    return 0;
+}
+#pragma endregion
